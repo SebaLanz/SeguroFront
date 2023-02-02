@@ -20,7 +20,7 @@ session_start();
             $oApi = new API();
             $login_status = $oApi->login($usuario, $password);
             if ($login_status == "RENEWPASS"){
-                header("Location:cambioclave.php");
+                header("Location:index.php");
                 exit;
             }
         }catch (Exception $e){
@@ -41,7 +41,7 @@ session_start();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
 
@@ -50,6 +50,7 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" href="img/candado.png"> <!--Acá cambio el ícono del buscador-->
     <?php if (!empty($loginErrorMsg)){ ?>
         <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
         <script>
@@ -60,7 +61,7 @@ session_start();
         </script>
     <?php } ?>
 </head>
-    <title>Tisa</title>
+    <title>Seguros</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -73,38 +74,41 @@ session_start();
 
 
 
-
-<body class="bg-gradient-primary">          
-
+<!--Acá cambio el color de fondo-->
+    <!--<body class="" style="background: linear-gradient(90deg, rgba(45,156,132,1) 24%, rgba(202,255,183,1) 50%, rgba(0,212,255,1) 100%);">-->          
+    <body class="" style="background-color:#E3DAD8;">  
     
-    <div class="container">
+    <style>
+      
+    </style>
+    <div class="container" >
 
         <!-- Outer Row -->
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" >
 
-            <div class="col-xl-10 col-lg-12 col-md-9">
+            <div class="col-xl-9 col-lg-18 col-md-1">
 
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+                <div class="card o-hidden border-2 shadow-lg my-5 ">
+                    <div class="card">
+                        <!-- Acá cambio el color de fondo De la CARTA -->
+                        <div class="row" style="background: linear-gradient(90deg, rgba(255,255,255,1) 24%, rgba(243,255,239,1) 50%, rgba(191,253,255,1) 100%);">
+                            <div class="col-lg-3 d-none d-lg-block bg-login-image"></div>
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">¡Bienvenido!</h1>
+                                        <h1 class="h4 text-gray-900 mb-4"><b>¡Bienvenido!</b></h1><!--Altura entre el texto y los botones-->
                                     </div>
                                     <form  method=POST action=login.php>
-                                        <div class="form-group">
+                                        <div class="form-group" class="text-center">
                                             <input type="user" class="form-control form-control-user"
                                                 id="usuario" aria-describedby="emailHelp"
-                                                placeholder="Ingrese su nombre de usuario..." name="usuario">
+                                                placeholder="Ingrese su usuario..." name="usuario">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"
                                                 id="password" placeholder="Password" name="password">
                                         </div>                                        
-                                        <input type="submit" class="btn btn-primary btn-user btn-block" value="Login">                                   <input type="hidden" name="accion" value="login" />                                            
+                                        <input type="submit" class="btn btn-# btn-user btn-block" style="background: rgb(50,206,208);" value="Ingresar"> <input type="hidden" name="accion" value="login" />                                            
                                     </form>
                                     <hr>
                                     <div class="text-center">

@@ -2,56 +2,49 @@
 
 require_once("accesscontrol.php");
 
-
+     
+    if($usuarioPermiso == 'ADMINISTRADOR'){
 
 try{
         
         // valido lo recibido del form
-        if (isset($_POST["id_proveedor"])){
-            if(empty($_POST["cod_provincia"])){
-                $_POST["cod_provincia"] = null;
-            }
-            $jsonProveedor = '{
-                                "id_proveedor": '.$_POST["id_proveedor"].',
-                                "razon_soc": "'.$_POST["razon_soc"].'",
-                                "cuit": "'.$_POST["cuit"].'",
-                                "calle": "'.$_POST["calle"].'",
-                                "numero_calle": "'.$_POST["numero_calle"].'",
-                                "localidad": "'.$_POST["localidad"].'",
-                                "cod_provincia": "'.$_POST["cod_provincia"].'",
-                                "telefono": "'.$_POST["telefono"].'",
+        if (isset($_POST["id_usuario"])){
+            $jsonUsuario = '{
+                                "id_usuario": '.$_POST["id_usuario"].',
+                                "usuario": "'.$_POST["usuario"].'",
                                 "email": "'.$_POST["email"].'"
                                 
                                
                             }';
 
             $oApi = new API();
-            if (empty($_POST["id_proveedor"])){
-                $oApi->crearProveedor($jsonProveedor); 
-                $Msg = "Proveedor Creado correctamente";
+            if (empty($_POST["id_usuario"])){
+				$oApi->crearUsuario($jsonUsuario); 
+                $Msg = "Usuario Creado correctamente";
             }else{
-                $oApi->actualizarProveedor($jsonProveedor); 
-                $Msg = "Proveedor Actualizado correctamente";
+				$emailRecibido = $_POST['email'];
+                $usuarioRecibido = $_POST['usuario'];
+                $oApi->actualizarUsuario($usuarioRecibido,$emailRecibido);
+                $Msg = "Usuario Actualizado correctamente";
             }   
         }else{
-            if (isset($_GET["id_proveedor"])){
+            if (isset($_GET["usuario"])){
                 $oApi = new API();
                 if($_GET["activo"]==1){
-                $oApi->desactivarProveedor($_GET["id_proveedor"]);
-                $Msg = "El Proveedor se desactivó correctamente";}
+                $oApi->desactivarUsuario($_GET["usuario"]);
+                $Msg = "El usuario <b>".$_GET["usuario"]."</b> se desactivó correctamente";}
                 else{
-                $oApi->activarProveedor($_GET["id_proveedor"]);
-                $Msg = "El Proveedor se activó correctamente";  
+                $oApi->activarUsuario($_GET["usuario"]);
+                $Msg = "El usuario <b>".$_GET["usuario"]."</b> se activó correctamente";  
                 }
                 
-            }else{
-                $Msg = "Faltan datos para completar la operación";
             }
+
         }        
     }catch (Exception $e){
         $Msg =  $e->getMessage();
     }
-
+    
 ?>
 
 
@@ -69,14 +62,14 @@ try{
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Proveedor</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Usuarios</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body"><?php if (!empty($Msg)){echo $Msg;} ?></div>
                 <div class="modal-footer">
-                    <a href="index.php?seccion=proveedores.php">
+                    <a href="index.php?seccion=usuarios.php">
                     <button class="btn btn-primary" type="button" >OK</button> 
                     </a>                   
                 </div>
@@ -84,6 +77,19 @@ try{
         </div>
     </div>
     <!-- fin error Modal-->
+
+
+    <?php }?>
+
+
+
+
+
+
+
+
+
+
 
 
 

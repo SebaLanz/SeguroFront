@@ -2,38 +2,46 @@
 
 require_once("accesscontrol.php");
 
-
-$Msg = "Datos guardados correctamente";
 try{
-        
         // valido lo recibido del form
-        if (isset($_POST["id_rubro"])){
-            $jsonrubro = '{
-                                "id_rubro": '.$_POST["id_rubro"].',
-                                "rubro": "'.$_POST["rubro"].'",
-                                "sigla_rubro": "'.$_POST["sigla_rubro"].'"
-                            }';
-
+        if (isset($_POST["id_tipo_plan"])){  
+         
+            $jsonPlan='{
+                "id_tipo_plan": '.$_POST["id_tipo_plan"].',
+                "tipo_plan": "'.$_POST["tipo_plan"].'",
+                "descripcion": "'.$_POST["descripcion"].'"
+            
+            }';
             $oApi = new API();
-            if (empty($_POST["id_rubro"])){
-                $oApi->crearrubro($jsonrubro); 
-                $Msg = "Rubro creado correctamente";
+            if (empty($_POST["id_tipo_plan"])){
+                if(!empty($_GET["tipo_plan"])){
+                $oApi->crearPlan($jsonPlan); 
+                $Msg = "Plan Creado correctamente";
             }else{
-                $oApi->actualizarrubro($jsonrubro); 
-                $Msg = "Rubro actualizado correctamente";
-            }   
-        }else{
-            if (isset($_GET["id_rubro"])){
-                $oApi = new API();
-                if($_GET["activo"]==1){
-                    $oApi->desactivarrubro($_GET["id_rubro"]);
-                    $Msg = "El rubro se desactivó correctamente";
-                }else{
-                    $oApi->activarrubro($_GET["id_rubro"]);
-                    $Msg = "El rubro se activó correctamente";  
+            $Msg = "El Tipo de plan es obligatorio";
                 }
             }else{
-                $Msg = "Faltan datos para completar la operación";
+                if(!empty($_GET["tipo_plan"])){
+                $oApi->actualizarPlan($jsonPlan); 
+                $Msg = "Plan Actualizado correctamente";
+            }else{
+                $Msg = "El Tipo de plan es obligatorio";
+                }
+            }   
+        }else{
+            if (isset($_GET["id_tipo_plan"])){
+                $oApi = new API();
+                if($_GET["activo"]==1){
+                $oApi->desactivarPlan($_GET["id_tipo_plan"]);
+                $Msg = "El plan se desactivó correctamente";}
+                else{
+                $oApi->activarPlan($_GET["id_tipo_plan"]);
+                $Msg = "El plan se activó correctamente";  
+                }
+                   
+            }else{
+                $var = $_POST["id_tipo_plan"];
+                $Msg = "Faltan datos para completar la operación / no entró a ningun lado $var";
             }
         }        
     }catch (Exception $e){
@@ -57,14 +65,14 @@ try{
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Mensaje</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Estado del Plan</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body"><?php if (!empty($Msg)){echo $Msg;} ?></div>
                 <div class="modal-footer">
-                    <a href="index.php?seccion=rubros.php">
+                    <a href="index.php?seccion=planes.php">
                     <button class="btn btn-primary" type="button" >OK</button> 
                     </a>                   
                 </div>

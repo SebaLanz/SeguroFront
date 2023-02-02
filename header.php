@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Tisa - Forbenthon</title>
+    <title>Seguros</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -20,7 +20,11 @@
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"></head>
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <link rel="icon" href="img/candado.png"> <!--Acá cambio el ícono del buscador-->
+
 </head>
 
 <body id="page-top">
@@ -29,25 +33,40 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color:#0076CE">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center"href="index.php">
                 <div class="sidebar-brand-icon rotate-n-15">
                     
                 </div>
-                <div class="sidebar-brand-text mx-3">Proyecto Tisa<br><sup></sup></div>
+                <div class="sidebar-brand-text mx-12"><br>Menú</div>
             </a>
 
             <!-- Divider Divide el menú con una línea--> 
-            <hr class="sidebar-divider my-0">            
+            <hr class="sidebar-divider my-1">            
 
-            <!-- Nav Item - Pages Collapse Menu -->
+            <!-- MENÚ USUARIOS -->
+            <?php
+            
+            $oApi = new API();
+            $userLogeado = $_SESSION['TISA_USERNAME'];//Obtengo el username Logeado
+            $usuarioLogeado = $oApi->getIdByUsuario($userLogeado);//instancio el método para obtener el ID del usuario.
+            foreach($usuarioLogeado as $usuario){            
+                    $id_usuario=$usuario->id_usuario;
+            }  
+            $usuarios = $oApi->getUsuarioById($id_usuario);  
+            
+            foreach($usuarios as $usuario){
+                 $usuarioPermiso = $usuario->perfil;
+            }
+            if($usuarioPermiso == 'ADMINISTRADOR'){       
+            ?> 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Usuarios</span>
+                    <i class="fas fa-user-cog"></i>
+                    <span> Usuarios</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">                        
@@ -55,65 +74,70 @@
                     </div>
                 </div>
             </li>
-
-            <!-- Nav Item - Utilities Collapse Menu -->
+            <?php }?>                                  
+            <!-- MENÚ CLIENTES, ANTES ERA EMPLEADOS EN TISA -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
                     aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Empleados</span>
+                    <i class="fas fa-user-tie"></i>
+                    <span>  Clientes</span>
                 </a>
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         
-                        <a class="collapse-item" href="index.php?seccion=empleados.php">Administrar empleados</a>
+                        <a class="collapse-item" href="index.php?seccion=clientes.php">Administrar Clientes</a>
                         
                     </div>
                 </div>
             </li>
-            <!-- Nav Item - Utilities Collapse Menu -->
+            
+              <!-- MENÚ Vehículos-->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProductos"
-                    aria-expanded="true" aria-controls="collapseProductos">
-                    <i class="fas fa-cart-plus"></i>
-                    <span>Productos</span>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePagesVehículos"
+                    aria-expanded="true" aria-controls="collapsePagesVehículos">
+                    <i class="fas fa-car"></i>
+                    <span>Administración</span>
                 </a>
-                <div id="collapseProductos" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
+                <div id="collapsePagesVehículos" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        
-                        <a class="collapse-item" href="index.php?seccion=productos.php">Administrar productos</a>
-                        
-                    </div>
-                </div>
-                <div id="collapseProductos" class="collapse" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        
-                        <a class="collapse-item" href="index.php?seccion=rubros.php">Administrar rubros</a>
-                        
-                    </div>
+                        <!--<h6 class="collapse-header">Alta - Baja - Modificación</h6>-->
+                        <a class="collapse-item" href="index.php?seccion=automoviles.php">Vehículos</a>
+                        <a class="collapse-item" href="index.php?seccion=planes.php">Planes</a>
+                        <a class="collapse-item" href="index.php?seccion=medios_de_pagos.php">Medios de Pago</a>
+
                 </div>
             </li>
 
-
-            <!-- Nav Item - Pages Collapse Menu -->
+             <!-- MENÚ Pagos -->
+             <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePagos"
+                    aria-expanded="true" aria-controls="collapsePagos">
+                    <i class="far fa-money-bill-alt"></i>
+                   <span>Pagos</span>
+                </a>
+                <div id="collapsePagos" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        
+                        <a class="collapse-item" href="index.php?seccion=pagos.php">Gestionar Pagos</a>
+                    </div>
+                </div>
+                </li>    
+            <!-- MENÚ informes -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
+
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInformes"
+                    aria-expanded="true" aria-controls="collapseInformes">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>Proveedores</span>
+                    <span>Informes</span>
                 </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div id="collapseInformes" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         
-                        <a class="collapse-item" href="index.php?seccion=proveedores.php">Administrar Proveedores</a>
+                        <a class="collapse-item" href="index.php?seccion=informes.php">Buscar Historial</a>
                     </div>
                 </div>
-            </li>         
-        
-
+            </li>    
             
         </ul>
         <!-- End of Sidebar -->
@@ -167,20 +191,53 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $_SESSION['TISA_USERNAME'];?></span>
-                                <img class="img-profile rounded-circle"
-                                    src="img/undraw_profile.svg">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php //echo $_SESSION['TISA_USERNAME'];?></span>
+                                <?php  
+                                
+                                $oApi = new API();
+                                $userLogeado = $_SESSION['TISA_USERNAME'];//Obtengo el username Logeado
+                                $usuarioLogeado = $oApi->getIdByUsuario($userLogeado);//instancio el método para obtener el ID del usuario.
+                                foreach($usuarioLogeado as $usuario){            
+                                        $id_usuario=$usuario->id_usuario;
+                                }         
+                                $usuarioImg = $oApi->getUsuarioImgPerfil($id_usuario);  
+                                ?><img class="img-profile rounded-circle" src="<?php  
+                                
+                                foreach($usuarioImg as $uImg){ 
+                                     echo $uImg->imgPerfil;
+                                
+                                     }
+                                    ?>  
+                                    ">
+                                    <h6 style="color:green; font-size:13px"><?php echo "&nbsp"."<b>".$_SESSION['TISA_USERNAME']."</b>";?></h6>
+
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                
+                                <a class="dropdown-item text-black-400" href="#">      
+                                                             
+                                                                
+                                
+                                    <img class="img-profile rounded-circle mx-auto d-block " src="<?php  
+                                
+                                foreach($usuarioImg as $uImg){ 
+                                     echo $uImg->imgPerfil; 
+                                     }
+                                    ?>  
+                                    " width="35" height="35">
+                               
+                                </a>   
+                                <a class="dropdown-item" href="index.php?seccion=usuario/edt_perfil.php&id=<?php echo $usuario->id_usuario;?>">
+                                
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-black-400"></i>
+                                    
                                     Perfil
                                 </a>                                
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-black-400"></i>
                                     Cerrar sesión
                                 </a>
                             </div>
@@ -190,3 +247,4 @@
 
                 </nav>
                 <!-- End of Topbar -->
+         

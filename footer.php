@@ -5,7 +5,8 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; TISA 2022</span>
+                        <i class="far fa-envelope"></i> <span>Sebastian.lanzetti@hotmail.com | </span>
+                        <i class="fab fa-linkedin">  in/sebastian-lanzetti</i>
                     </div>
                 </div>
             </footer>

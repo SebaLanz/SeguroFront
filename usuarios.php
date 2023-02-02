@@ -4,12 +4,17 @@ require_once("accesscontrol.php");
 $ErrorMsg = "";
 try{
         $oApi = new API();
-        $usuarios = $oApi->getUsuariosAll();            
+        $usuarios = $oApi->getUsuariosAll();     
+        $userLogeado = $_SESSION['TISA_USERNAME'];//Obtengo el username Logeado
+    
+
     }catch (Exception $e){
         $ErrorMsg =  $e->getMessage();
     }
 
 ?>
+
+
 
 <?php if (!empty($ErrorMsg )) { ?>
     <!-- error Modal-->
@@ -41,6 +46,12 @@ try{
     <!-- fin error Modal-->
 <?php } ?>    
 <!-- Begin Page Content -->
+<?php 
+     
+        if($usuarioPermiso == 'ADMINISTRADOR'){
+
+?>
+
 <?php if(empty($ErrorMsg)) { ?>
                 <div class="container-fluid">
 
@@ -51,9 +62,12 @@ try{
 		<li class="breadcrumb-item active" aria-current="page">Administración de usuarios</li>
     </ol>
 </nav>
-					
-					
-					
+<!-- Creo 2 etiquetas para dar color -->
+<style>
+ p { color: red; }
+ g { color: green; }
+</style>
+			
                     <h1 class="h3 mb-2 text-gray-800">Administración de usuarios</h1>
                     <p class="mb-4">   </p>
 
@@ -79,34 +93,25 @@ try{
                                             <th>ID</th>
                                             <th>Usuario</th>
                                             <th>Email</th>
-                                            <th>Activo</th>
-
-                                            <th>Permiso</th>
-
-                                            <th>Acciones</th>                                            
+                                            <th>activo</th>
+                                            <th>Perfil</th>  
+                                            <th>Acciones</th>      
+                                                                                   
                                         </tr>
                                     </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Usuario</th>
-                                            <th>Email</th>
-                                            <th>Activo</th>
-
-                                            <th>Permiso</th>
-
-                                            <th>Acciones</th>                            
-                                        </tr>
-                                    </tfoot>
+                                    
                                     <tbody>
                                     <?php foreach($usuarios as $usuario){ ?>
                                         <tr>
+                                          
+                                                   
                                             <td><?php echo $usuario->id_usuario;?></td>
                                             <td><?php echo $usuario->usuario;?></td>
                                             <td><?php echo $usuario->email;?></td>
-                                            <td><?php echo $usuario->activo;?></td>
-                                            <td><?php echo $usuario->perfil;?></td> 
-
+                                            <td><g><?php if($usuario->activo == '1') {echo "Activo";}?></g>
+                                                <p><?php if($usuario->activo == '0'){echo "Inactivo";}?></p></td>
+                                            <td><?php echo $usuario->perfil;?></td>
+                                            
                                             <td>
 											
 											<div class=btn-group>
@@ -118,46 +123,41 @@ try{
 												</a>
 												
 												
-												<a class="btn btn-outline-danger" href="" data-toggle="modal" data-toggle="tooltip"
-												data-placement="bottom" title=" Borrar " data-target="#ModalEditar<?php echo $usuario->id_usuario;?>">
-                                                <i class="fas fa-trash-alt"> </i>
+												<!-- fas fa-trash-alt -->
+                                                <a <?php if($usuario->activo == '1') {?> class="btn btn-outline-danger" title=" Baja " <?php }else{?> class="btn btn-outline-success" <?php }?> href="" data-toggle="modal" data-toggle="tooltip"
+												data-placement="bottom" title=" Alta " data-target="#ModalEditar<?php echo $usuario->usuario;?>">
+                                                <?php if($usuario->activo == '1') {?> <i class="fas fa-user-slash"> </i><?php }?>
+                                                <?php if($usuario->activo == '0') {?> <i class="fas fa-user-check"> </i><?php }?>
 												</a>
+														
 																						                                             
 												
-												</div>											
-											
-											
-											
-											
-
+											</div>																				
                                         </tr>  
-									
+                                  
+                                    
 									<!-- Modal Borrar -->
-                            <div class="modal fade" id="ModalEditar<?php echo $usuario->id_usuario; ?>" tabindex="-1" role="dialog">
+                            <div class="modal fade" id="ModalEditar<?php echo $usuario->usuario;?>" tabindex="-1" role="dialog">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title">Esta seguro de eliminar el Usuario?</h4>
+                                        <?php if($usuario->activo == '1') {?> <h4 class="modal-title">Esta seguro de dar la baja al Usuario <b>--><?php echo $usuario->usuario;?></b> ?</h4><?php }?>
+                                        <?php if($usuario->activo == '0') {?> <h4 class="modal-title">Esta seguro de dar el alta al Usuario <b>--><?php echo $usuario->usuario;?></b> ?</h4><?php }?>
                                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         </div>
                                         <div class="modal-body">
-                                            <form method="POST" action="index.php?seccion=usuario/usuario_save.php&id_usuario=<?php echo $usuario->id_usuario;?>" autocomplete="off" enctype="multipart/form-data">
-                                                
+                                            <form method="POST" action="index.php?seccion=usuario/usuario_save.php&usuario=<?php echo $usuario->usuario;?>&activo=<?php echo $usuario->activo;?>" autocomplete="off" enctype="multipart/form-data">
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-light btn-lg" data-dismiss="modal">Cerrar</button>
-                                                    <button type="submit" class="btn btn-outline-danger btn-lg"><i class="fas fa-trash-alt mr-2"></i>Elimimar</button>
+                                                    <?php if($usuario->activo == '1') {?><button type="submit" class="btn btn-outline-danger btn-lg"><i class="fas fa-user-slash"></i> Dar de Baja</button><?php }?>
+                                                    <?php if($usuario->activo == '0') {?><button type="submit" class="btn btn-outline-success btn-lg"><i class="fas fa-user-check"></i> Dar de Alta</button><?php }?>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-									
-									
-									
-									
-									
-                                    <?php }?>                                      
+                            </div>								
+                            <?php }?>                                  
                                     </tbody>
                                 </table>
                             </div>
@@ -168,12 +168,5 @@ try{
                 <!-- /.container-fluid -->
 
 <?php } 
+ }    
 include_once FOOTER_FILE;?>
-
-<script>
-    $('#dataTable').DataTable({
-        "language": {
-            "url": "lenguaje.json"
-        }
-    });
-</script>

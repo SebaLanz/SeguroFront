@@ -9,31 +9,34 @@ if(isset($_GET["id"])){try{
         $oApi = new API();
         
         if(!empty($_GET["id"])){
-            // si el id no es cero es editar de rubro
-            $rubros = $oApi->getRubroById($_GET["id"]);            
-            $rubro = $rubros[0];
-            $titulo = "Edición de rubro";
+            // si el id no es cero es editar de empleado
+            $planes = $oApi->getPlanById($_GET["id"]);    
+            $plan = $planes[0];        
+            $titulo = "Edición de datos del automovil";
         }else{
             // si el id es cero es alta
-            $titulo = "Alta de rubro";
+            $titulo = "Alta de Plan";
             $jsonModel = '{
-                            "id_rubro": 0,
-                            "rubro": "",
-                            "sigla_rubro": ""                        
+                            "id_tipo_plan": 0,
+                            "tipo_plan": "",
+                            "descripcion": ""                     
                         }';
 
 
-            $rubro = json_decode($jsonModel);
+            $plan = json_decode($jsonModel);
 
-        } 
-
-        $rubros = $oApi->getRubrosAll();
-
+        }
+        // --- //
+        $userLogeado = $_SESSION['TISA_USERNAME'];//Obtengo el username Logeado
+        $usuarioLogeado = $oApi->getIdByUsuario($userLogeado);//instancio el método para obtener el ID del usuario.
+        foreach($usuarioLogeado as $usuario){            
+                $id_usuario=$usuario->id_usuario;
+        }  
     }catch (Exception $e){
         $ErrorMsg =  $e->getMessage();
     }
 }else{
-    $ErrorMsg = "Falta el parámetro id_rubro";
+    $ErrorMsg = "Falta el parámetro plan";
 }
 
 ?>
@@ -53,7 +56,7 @@ if(isset($_GET["id"])){try{
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Mensaje</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Error de cargando datos</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -69,21 +72,27 @@ if(isset($_GET["id"])){try{
 <?php } ?>    
 <!-- Begin Page Content -->
 <?php if(empty($ErrorMsg)) { ?>
+
+  <!--Buscador con selector-->
+  <link rel="stylesheet" type="text/css" href="css/select2.min.css">
+  <link rel="stylesheet" href="css/seba.css">
+    <script
+  src="https://code.jquery.com/jquery-3.6.1.js"
+  integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+  crossorigin="anonymous"></script>
+    <script src="js/select2.min.js"> </script>
               
         <!-- /.acá poner el form yu cargarle los valores -->
        <div class="container-fluid">
 
                     <!-- Page Heading -->
-
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="./index.php">Inicio</a></li>
-                            <li class="breadcrumb-item"><a href="./index.php?seccion=rubros.php">Administracion de rubros</a></li>
+                            <li class="breadcrumb-item"><a href="./index.php?seccion=planes.php">Administración de Planes</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><?php echo $titulo ?></li>
                         </ol>
                     </nav>
-                    <h1 class="h3 mb-2 text-gray-800">Administración de rubros</h1>
-                    <p class="mb-4"> </p>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
@@ -92,42 +101,35 @@ if(isset($_GET["id"])){try{
                         </div>
                         <div class="card-body">                            
                             <div>
-                               <form id="form_rubro" method="post" action="index.php?seccion=rubro/rubro_save.php">
+                               <form id="form_plan" method="post" action="index.php?seccion=plan/plan_save.php">
                                   <!-- 2 column grid layout with text inputs for the first and last names -->
                                   <div class="row mb-4">
-                                    <div class="col">
+                                    <div class="col" >
                                       <div class="form-outline">
-                                        <input type="text" name="id_rubro" id="id_rubro" disabled="" class="form-control"  value="<?php echo $rubro->id_rubro;?>" />
-                                        <input type="hidden" name="id_rubro" id="id_rubro" class="form-control"  value="<?php echo $rubro->id_rubro;?>" />
-                                        <label class="form-label" for="id_rubro">ID</label>
-                                      </div>
+                                      <input style="width:5%;text-align: center;" type="text" name="id_tipo_plan_sh" id="id_tipo_plan_sh" disabled="" class="form-control"  value="<?php echo $plan->id_tipo_plan ;?>" />
+                                        <input type="hidden" name="id_tipo_plan" id="id_tipo_plan" class="form-control"  value="<?php echo $plan->id_tipo_plan;?>" />
+                                        <label class="form-label" for="id_tipo_plan">ID</label>
                                     </div>
-                                    <div class="col">
-                                      <div class="form-outline">
-                                        <input type="text" name="rubro" id="rubro" class="form-control" value="<?php echo $rubro->rubro;?>" />
-                                        <label class="form-label" for="rubro">Rubro</label>
-                                      </div>
-                                    </div>
-                                    <div class="col">
-                                      <div class="form-outline">
-									  <?php if ($rubro->id_rubro == 0) { ?>
-                                        <input type="text" name="sigla_rubro" id="sigla_rubro" class="form-control" value="<?php echo $rubro->sigla_rubro;?>"/>
-									  <?php } else { ?>
-									   <input type="text" name="sigla_rubro" id="sigla_rubro" disabled="" class="form-control" value="<?php echo $rubro->sigla_rubro;?>"/>
-									  <?php } ?>
-										
-										<label class="form-label" for="sigla_rubro">Sigla</label>
-                                      </div>
-                                    </div>
-                                  </div>
 
+                                        <input style="width:10%" type="text" name="tipo_plan" id="tipo_plan" class="form-control"  value="<?php  echo $plan->tipo_plan?>" />
+                                        <label  class="form-label" for="tipo_plan">Plan</label>
+
+
+                                        <input style="width:50%" type="text" name="descripcion" id="descripcion" class="form-control"  value="<?php  echo $plan->descripcion?>" />
+                                        <label class="form-label" for="descripcion">Descripcion</label>
+                                  </div>
+                                  </div>
                                   <!-- Submit button -->
-                                  <button type="submit" class="btn btn-primary btn-block mb-4">Guardar</button>
+                                    <button size="45" type="submit" class="btn btn-primary btn-block mb-4" size="15">Guardar</button>
                                 </form>
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <!-- /.container-fluid -->
-<?php } 
+<?php } ?>
+<script type="text/javascript">
+$(document).ready(function() {
+$('.js-example-basic-single').select2();
+});
+</script>

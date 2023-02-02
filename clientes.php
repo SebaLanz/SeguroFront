@@ -1,12 +1,17 @@
 <?php
-
+//Esto es CLIENTES
 require_once("accesscontrol.php");
 
 
 $ErrorMsg = "";
 try{
         $oApi = new API();
-        $empleados = $oApi->getEmpleadosAll();            
+        $userLogeado = $_SESSION['TISA_USERNAME'];//Obtengo el username Logeado
+        $usuarioLogeado = $oApi->getIdByUsuario($userLogeado);//instancio el método para obtener el ID del usuario.
+        foreach($usuarioLogeado as $usuario){            
+                $id_usuario=$usuario->id_usuario;
+        }         
+        $clientes = $oApi->getAllByUserLog($id_usuario);            
     }catch (Exception $e){
         $ErrorMsg =  $e->getMessage();
     }
@@ -44,26 +49,30 @@ try{
 <?php } ?>    
 <!-- Begin Page Content -->
 <?php if(empty($ErrorMsg)) { ?>
+<style>
+ p { color: red; }
+ g { color: green; }
+</style>
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
 					<nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="./index.php">Inicio</a></li>
-		<li class="breadcrumb-item active" aria-current="page">Administración de empleados</li>
+		<li class="breadcrumb-item active" aria-current="page">Administración de Clientes</li>
     </ol>
 </nav>
 					
-                    <h1 class="h3 mb-2 text-gray-800">Administración de empleados</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Administración de Clientes</h1>
                     <p class="mb-4"> </p>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
 
-                            <h6 class="m-0 font-weight-bold text-primary">Empleados registrados 
+                            <h6 class="m-0 font-weight-bold text-primary">Registrar Cliente -->
 							
-							<a class="btn btn-outline-primary" href="index.php?seccion=empleado/edt_empleado.php&id=0"
+							<a class="btn btn-outline-primary" href="index.php?seccion=cliente/edt_cliente.php&id=0"
                             data-toggle="tooltip" data-placement="bottom" title=" Nuevo ">
                             <i class="fas fa-user-plus"> </i>
 								</a>					
@@ -78,14 +87,15 @@ try{
 
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
                                             <th>Nombre</th>
                                             <th>Apellido</th>
+                                            <th>DNI</th>
                                             <th>Calle</th>
-                                            <th>nro</th>
+                                            <th>Nro</th>
                                             <th>Localidad</th>
                                             <th>Prov.</th>
                                             <th>Email</th>
+                                            <th>Activo</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -103,60 +113,66 @@ try{
                                         </tr> -->
                                     </tfoot>
                                     <tbody>
-                                    <?php foreach($empleados as $empleado){ ?>
+                                    <?php foreach($clientes as $cliente){ ?>
                                         <tr>
-                                            <td><?php echo $empleado->id_empleado;?></td>
-                                            <td><?php echo $empleado->nombre;?></td>
-                                            <td><?php echo $empleado->apellido;?></td>
-                                            <td><?php echo $empleado->calle;?></td>
-                                            <td><?php echo $empleado->numero_calle;?></td> 
-                                            <td><?php echo $empleado->localidad;?></td> 
-                                            <td><?php echo $empleado->provincia;?></td> 
-                                            <td><?php echo $empleado->email;?></td> 
+                                            <?php  $cliente->id_empleado;?>
+                                            <td><?php echo $cliente->nombre;?></td>
+                                            <td><?php echo $cliente->apellido;?></td>
+                                            <td><?php echo $cliente->dni;?></td>
+                                            <td><?php echo $cliente->calle;?></td>
+                                            <td><?php echo $cliente->numero_calle;?></td> 
+                                            <td><?php echo $cliente->localidad;?></td> 
+                                            <td><?php echo $cliente->provincia;?></td> 
+                                            <td><?php echo $cliente->email;?></td> 
+                                            <td><g><?php if($cliente->activo == '1') {echo "Activo";}?></g>
+                                                <p><?php if($cliente->activo == '0'){echo "Inactivo";}?></p></td>
+                                                                        
                                             <td>
 											
-											<div class=btn-group>
+                                            <div class=btn-group>
 												
-												<a class="btn btn-outline-success" href="index.php?seccion=empleado/edt_empleado.php&id=<?php echo $empleado->id_empleado;?>"
+												
+												<a class="btn btn-outline-success" href="index.php?seccion=cliente/edt_cliente.php&id=<?php echo $cliente->id_empleado;?>"
                                                 data-toggle="tooltip" data-placement="bottom" title=" Editar ">
                                                 <i class="fas fa-pencil-alt"> </i>
 												</a>
 												
-											    <a class="btn btn-outline-danger" href="" data-toggle="modal" data-toggle="tooltip"
-												data-placement="bottom" title=" Borrar " data-target="#ModalEditar<?php echo $empleado->id_empleado; ?>">
-                                                <i class="fas fa-trash-alt"> </i>
+												
+												<!-- fas fa-trash-alt -->
+                                                <a <?php if($cliente->activo == '1') {?> class="btn btn-outline-danger" title=" Baja " <?php }else{?> class="btn btn-outline-success" <?php }?> href="" data-toggle="modal" data-toggle="tooltip"
+												data-placement="bottom" title=" Alta " data-target="#ModalEditar<?php echo $cliente->apellido;?>">
+                                                <?php if($cliente->activo == '1') {?> <i class="fas fa-user-slash"> </i><?php }?>
+                                                <?php if($cliente->activo == '0') {?> <i class="fas fa-user-check"> </i><?php }?>
 												</a>
+														
+																						                                             
 												
-												</div>
-												
-
-                                                </td> 
+											</div>																				
                                         </tr>  
-										
-														<!-- Modal Borrar -->
-                            <div class="modal fade" id="ModalEditar<?php echo $empleado->id_empleado; ?>" tabindex="-1" role="dialog">
+                                  
+                                    
+									<!-- Modal Borrar -->
+                            <div class="modal fade" id="ModalEditar<?php echo $cliente->apellido;?>" tabindex="-1" role="dialog">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title">¿Esta seguro que quiere eliminar al empleado?</h4>
+                                        <?php if($cliente->activo == '1') {?> <h4 class="modal-title">Esta seguro de dar la baja al cliente <b>--><?php echo $cliente->apellido;?></b> ?</h4><?php }?>
+                                        <?php if($cliente->activo == '0') {?> <h4 class="modal-title">Esta seguro de dar el alta al cliente <b>--><?php echo $cliente->apellido;?></b> ?</h4><?php }?>
                                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         </div>
                                         <div class="modal-body">
-                                            <form method="POST" action="index.php?seccion=empleado/empleado_save.php&id_empleado=<?php echo $empleado->id_empleado;?>" autocomplete="off" enctype="multipart/form-data">
-                                                
+                                            <form method="POST" action="index.php?seccion=cliente/cliente_save.php&id_empleado=<?php echo $cliente->id_empleado;?>&activo=<?php echo $cliente->activo;?>&apellido=<?php echo $cliente->apellido;?>" autocomplete="off" enctype="multipart/form-data">
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-light btn-lg" data-dismiss="modal">Cerrar</button>
-                                                    <button type="submit" class="btn btn-outline-danger btn-lg"><i class="fas fa-trash-alt mr-2"></i>Eliminar</button>
+                                                    <?php if($cliente->activo == '1') {?><button type="submit" class="btn btn-outline-danger btn-lg"><i class="fas fa-user-slash"></i> Dar de Baja</button><?php }?>
+                                                    <?php if($cliente->activo == '0') {?><button type="submit" class="btn btn-outline-success btn-lg"><i class="fas fa-user-check"></i> Dar de Alta</button><?php }?>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-										
-										
-										
-                                    <?php }?>                                      
+                            </div>								
+                            <?php }?>                            
                                     </tbody>
                                 </table>
                             </div>

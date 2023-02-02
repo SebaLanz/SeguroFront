@@ -2,38 +2,35 @@
 
 require_once("accesscontrol.php");
 
-
 $ErrorMsg = "";
 if(isset($_GET["id"])){try{
 
         $oApi = new API();
         
         if(!empty($_GET["id"])){
-            // si el id no es cero es editar de rubro
-            $rubros = $oApi->getRubroById($_GET["id"]);            
-            $rubro = $rubros[0];
-            $titulo = "Edición de rubro";
+            // si el id no es cero es editar de empleado
+            $usuarios = $oApi->getUsuarioById($_GET["id"]);            
+            $usuario = $usuarios[0];
+            $titulo = "Edición de datos de usuario";
+			
         }else{
             // si el id es cero es alta
-            $titulo = "Alta de rubro";
+            $titulo = "Alta de usuario";
             $jsonModel = '{
-                            "id_rubro": 0,
-                            "rubro": "",
-                            "sigla_rubro": ""                        
+                            "id_usuario": 0,
+                            "usuario": "", 
+                            "email": ""                   
                         }';
 
+            $usuario = json_decode($jsonModel);
+            //var_dump($usuario);
 
-            $rubro = json_decode($jsonModel);
-
-        } 
-
-        $rubros = $oApi->getRubrosAll();
-
+        }
     }catch (Exception $e){
         $ErrorMsg =  $e->getMessage();
     }
 }else{
-    $ErrorMsg = "Falta el parámetro id_rubro";
+    $ErrorMsg = "Falta el parámetro id_usuario";
 }
 
 ?>
@@ -53,7 +50,7 @@ if(isset($_GET["id"])){try{
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Mensaje</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Error de cargando datos</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -70,19 +67,16 @@ if(isset($_GET["id"])){try{
 <!-- Begin Page Content -->
 <?php if(empty($ErrorMsg)) { ?>
               
+<?php 
+     
+        if($usuarioPermiso == 'ADMINISTRADOR'){
+
+?>
         <!-- /.acá poner el form yu cargarle los valores -->
        <div class="container-fluid">
 
                     <!-- Page Heading -->
-
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="./index.php">Inicio</a></li>
-                            <li class="breadcrumb-item"><a href="./index.php?seccion=rubros.php">Administracion de rubros</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><?php echo $titulo ?></li>
-                        </ol>
-                    </nav>
-                    <h1 class="h3 mb-2 text-gray-800">Administración de rubros</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Administración de usuarios</h1>
                     <p class="mb-4"> </p>
 
                     <!-- DataTales Example -->
@@ -92,37 +86,42 @@ if(isset($_GET["id"])){try{
                         </div>
                         <div class="card-body">                            
                             <div>
-                               <form id="form_rubro" method="post" action="index.php?seccion=rubro/rubro_save.php">
+                               <form id="form_usuario" method="post" action="index.php?seccion=usuario/usuario_save.php">
                                   <!-- 2 column grid layout with text inputs for the first and last names -->
                                   <div class="row mb-4">
                                     <div class="col">
                                       <div class="form-outline">
-                                        <input type="text" name="id_rubro" id="id_rubro" disabled="" class="form-control"  value="<?php echo $rubro->id_rubro;?>" />
-                                        <input type="hidden" name="id_rubro" id="id_rubro" class="form-control"  value="<?php echo $rubro->id_rubro;?>" />
-                                        <label class="form-label" for="id_rubro">ID</label>
+                                        <input type="text" name="id_usuario_sh" id="id_usuario_sh" disabled="" class="form-control"  value="<?php echo $usuario->id_usuario;?>" />
+                                        <input type="hidden" name="id_usuario" id="id_usuario" class="form-control"  value="<?php echo $usuario->id_usuario;?>" />
+                                        <label class="form-label" for="id_usuario">ID</label>
                                       </div>
                                     </div>
                                     <div class="col">
                                       <div class="form-outline">
-                                        <input type="text" name="rubro" id="rubro" class="form-control" value="<?php echo $rubro->rubro;?>" />
-                                        <label class="form-label" for="rubro">Rubro</label>
+                                      <?php if($usuario->id_usuario == 0){?><input type="text" name="usuario" id="usuario" class="form-control" value="<?php echo $usuario->usuario;?>" /><?php }?>
+                                      <?php if($usuario->id_usuario != 0){?><input type="text" name="usuario" id="usuario" readonly="readonly" class="form-control" value="<?php echo $usuario->usuario;?>" /><?php }?>
+                                      <label class="form-label" for="usuario">usuario</label>
                                       </div>
                                     </div>
                                     <div class="col">
                                       <div class="form-outline">
-									  <?php if ($rubro->id_rubro == 0) { ?>
-                                        <input type="text" name="sigla_rubro" id="sigla_rubro" class="form-control" value="<?php echo $rubro->sigla_rubro;?>"/>
-									  <?php } else { ?>
-									   <input type="text" name="sigla_rubro" id="sigla_rubro" disabled="" class="form-control" value="<?php echo $rubro->sigla_rubro;?>"/>
-									  <?php } ?>
-										
-										<label class="form-label" for="sigla_rubro">Sigla</label>
+                                        <input type="text" name="email" id="email" name="email" required class="form-control" value="<?php echo $usuario->email;?>"/>
+                                        <label class="form-label" for="email">email</label>
                                       </div>
                                     </div>
                                   </div>
 
+
+
                                   <!-- Submit button -->
                                   <button type="submit" class="btn btn-primary btn-block mb-4">Guardar</button>
+                                  
+                                   <!--?php echo $empleado->id_empleado;?>-->
+                                   <td><a href="index.php?seccion=usuarios.php">
+                                   <button class="btn btn-primary btn-block mb-4" type="button" >Volver Atras</button>
+                                     </a>
+                                    </td> 
+                                  
                                 </form>
                             </div>
                         </div>
@@ -131,3 +130,8 @@ if(isset($_GET["id"])){try{
                 </div>
                 <!-- /.container-fluid -->
 <?php } 
+
+}else{
+    header("Location: index.php");
+    die();
+}
